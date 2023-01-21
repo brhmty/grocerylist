@@ -5,24 +5,7 @@ import { arrayChange, arrayDelete } from "./../utilities/functions";
 import * as data from "./../utilities/data";
 
 const FormAdd = () => {
-  const {
-    mainList,
-    setMainList,
-    inputText,
-    itemId,
-    setItemId,
-    edit,
-    setEdit,
-    editId,
-    buttonText,
-    setButtonText,
-    deleteItem,
-    deleteId,
-    setDeleteItem,
-    setClearList,
-    setAlertType,
-    setShowAlert,
-  } = useContext(MainContext);
+  const { dispatch, state } = useContext(MainContext);
   const [item, setItem] = useState("");
   const inputField = useRef();
 
@@ -31,46 +14,49 @@ const FormAdd = () => {
     const localList = JSON.parse(localStorage.getItem("mainList"));
     const check = localList !== null && localList.length > 0;
     if (check) {
-      setItemId(localList.length);
-      setMainList([...localList]);
+      dispatch({ type: "setItemId", payload: localList.length });
+      dispatch({ type: "setMainList", payload: [...localList] });
       groceryList.push(...localList);
     }
   }, []);
 
   //toUpdateInputFieldAndButtonTextWhenEditing
   useEffect(() => {
-    inputField.current.value = inputText;
-    if (inputText !== "") setButtonText(data.edit);
-  }, [inputText]);
+    inputField.current.value = state.inputText;
+    if (state.inputText !== "")
+      dispatch({ type: "setButtonText", payload: data.edit });
+  }, [state.inputText]);
 
   //toDeleteItemFromMainList
   useEffect(() => {
-    if (deleteItem) {
-      arrayDelete(groceryList, deleteId);
-      arrayDelete(mainList, deleteId);
-      setMainList([...mainList]);
-      setDeleteItem(false);
+    if (state.deleteItem) {
+      arrayDelete(groceryList, state.deleteId);
+      arrayDelete(state.mainList, state.deleteId);
+      dispatch({ type: "setMainList", payload: [...state.mainList] });
+      dispatch({ type: "setDeleteItem", payload: false });
       //toClearLocalStorageToo
-      if (mainList.length === 0) setClearList(true);
+      if (state.mainList.length === 0)
+        dispatch({ type: "setClearList", payload: true });
     }
-  }, [deleteItem]);
+  }, [state.deleteItem]);
 
   //addingNewItemAndUpdateMainList
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!edit) {
+    if (!state.edit) {
+      const itemId = state.itemId;
       groceryList.push({ itemId, item });
-      setItemId(itemId + 1);
-      setMainList([...groceryList]);
-      setAlertType(data.alertTypeAdd);
-      setShowAlert(true);
+      dispatch({ type: "setItemId", payload: state.itemId + 1 });
+      dispatch({ type: "setMainList", payload: [...groceryList] });
+      dispatch({ type: "setAlertType", payload: data.alertTypeAdd });
+      dispatch({ type: "setShowAlert", payload: true });
     }
     //toEditInputFieldAndListİtemAndUpdateMainList
     else {
-      arrayChange(mainList, editId, item);
-      setMainList([...mainList]);
-      setEdit(false);
-      setButtonText(data.submit);
+      arrayChange(state.mainList, state.editId, item);
+      dispatch({ type: "setMainList", payload: [...state.mainList] });
+      dispatch({ type: "setEdit", payload: false });
+      dispatch({ type: "setButtonText", payload: data.submit });
     }
     inputField.current.value = "";
   };
@@ -93,7 +79,7 @@ const FormAdd = () => {
         type="submit"
         className="md:w-2/12 w-3/12 leading-8 bg-blue-300 rounded-r"
       >
-        {buttonText}
+        {state.buttonText}
       </button>
     </form>
   );

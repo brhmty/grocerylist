@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { MainContext } from "./MainContainer";
 
 const ClearList = () => {
-  const { setMainList, setClearList } = useContext(MainContext);
+  const { dispatch } = useContext(MainContext);
   const handleClick = () => {
-    setMainList([]);
-    setClearList(true);
+    dispatch({ type: "setMainList", payload: [] });
+    dispatch({ type: "setClearList", payload: true });
   };
   return (
     <div className="w-full h-12 mt-4 flex justify-center">

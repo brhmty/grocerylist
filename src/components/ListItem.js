@@ -1,46 +1,40 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext } from "react";
 import { TfiPencilAlt } from "react-icons/tfi";
 import { ImBin2 } from "react-icons/im";
 import { MainContext } from "./MainContainer";
-import { alertTypeRemove } from "../utilities/data";
+import * as data from "../utilities/data";
 
 function ListItem() {
-  const {
-    mainList,
-    setInputText,
-    setEdit,
-    setEditId,
-    setDeleteItem,
-    setDeleteId,
-    setAlertType,
-    setShowAlert,
-  } = useContext(MainContext);
+  const { dispatch, state } = useContext(MainContext);
 
   const handleEdit = (event) => {
     switch (event.target.getAttribute("name")) {
       case "edit_icon":
         {
-          const specificItem = mainList.find(
+          const specificItem = state.mainList.find(
             (listItem) => listItem.itemId === Number(event.currentTarget.id)
           );
-          setInputText(specificItem.item);
-          setEdit(true);
-          setEditId(event.currentTarget.id);
+          dispatch({ type: "setInputText", payload: specificItem.item });
+          dispatch({ type: "setEdit", payload: true });
+          dispatch({ type: "setEditId", payload: event.currentTarget.id });
         }
         break;
       case "delete_icon":
         {
-          setDeleteId(event.currentTarget.id);
-          setDeleteItem("true");
-          setAlertType(alertTypeRemove);
-          setShowAlert(true);
+          dispatch({ type: "setDeleteId", payload: event.currentTarget.id });
+          dispatch({ type: "setDeleteItem", payload: true });
+          dispatch({ type: "setAlertType", payload: data.alertTypeRemove });
+          dispatch({ type: "setShowAlert", payload: true });
         }
         break;
+      default: {
+        throw new Error();
+      }
     }
   };
   return (
     <>
-      {mainList.map((listItem) => {
+      {state.mainList.map((listItem) => {
         return (
           <div
             key={listItem.itemId}
