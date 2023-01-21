@@ -15,6 +15,7 @@ function ListItem() {
             (listItem) => listItem.itemId === Number(event.currentTarget.id)
           );
           dispatch({ type: "setInputText", payload: specificItem.item });
+          dispatch({ type: "setItem", payload: specificItem.item });
           dispatch({ type: "setEdit", payload: true });
           dispatch({ type: "setEditId", payload: event.currentTarget.id });
         }
