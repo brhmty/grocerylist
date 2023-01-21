@@ -109,7 +109,7 @@ const MainContainer = () => {
   }, [state.mainList]);
 
   return (
-    <div className="main-container md:w-5/12 w-10/12 min-h-[9rem] bg-white mx-auto my-36 drop-shadow-xl">
+    <div className="main-container md:w-5/12 w-10/12 min-h-[9rem] max-h-[25rem] overflow-y-auto bg-white mx-auto my-36 drop-shadow-xl">
       <Title />
       <MainContext.Provider
         value={{

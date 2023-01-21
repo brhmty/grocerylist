@@ -65,6 +65,7 @@ const FormAdd = () => {
       dispatch({ type: "setAlertType", payload: data.alertTypeEdit });
       dispatch({ type: "setAlertColor", payload: data.colorAddEdit });
       dispatch({ type: "setShowAlert", payload: true });
+      dispatch({ type: "setItem", payload: "" });
       resetPage();
     } else if (state.item.length === 0) {
       dispatch({ type: "setAlertType", payload: data.alertTypeEmpty });

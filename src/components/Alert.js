@@ -26,7 +26,7 @@ const Alert = () => {
     return () => {
       clearTimeout(showAlert);
     };
-  }, [state.alertType]);
+  }, [state.mainList, state.alertType]);
 
   return (
     <>

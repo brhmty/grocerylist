@@ -30,7 +30,7 @@ function ListItem() {
         }
         break;
       default: {
-        throw new Error();
+        break;
       }
     }
   };
