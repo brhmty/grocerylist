@@ -24,6 +24,7 @@ function ListItem() {
           dispatch({ type: "setDeleteId", payload: event.currentTarget.id });
           dispatch({ type: "setDeleteItem", payload: true });
           dispatch({ type: "setAlertType", payload: data.alertTypeRemove });
+          dispatch({ type: "setAlertColor", payload: data.colorDeleteClear });
           dispatch({ type: "setShowAlert", payload: true });
         }
         break;

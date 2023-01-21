@@ -9,8 +9,14 @@ const Alert = () => {
   useEffect(() => {
     if (state.alertType === data.alertTypeAdd) {
       dispatch({ type: "setAlertText", payload: data.alertItemAdded });
-    } else {
+    } else if (state.alertType === data.alertTypeRemove) {
       dispatch({ type: "setAlertText", payload: data.alertItemRemoved });
+    } else if (state.alertType === data.alertTypeClear) {
+      dispatch({ type: "setAlertText", payload: data.alertListCleared });
+    } else if (state.alertType === data.alertTypeEdit) {
+      dispatch({ type: "setAlertText", payload: data.alertItemEdited });
+    } else if (state.alertType === data.alertTypeEmpty) {
+      dispatch({ type: "setAlertText", payload: data.alertItemEmpty });
     }
 
     const showAlert = setTimeout(() => {
@@ -20,20 +26,15 @@ const Alert = () => {
     return () => {
       clearTimeout(showAlert);
     };
-  }, [state.mainList]);
+  }, [state.alertType]);
 
   return (
     <>
-      {state.showAlert &&
-        (state.alertType === data.alertTypeAdd ? (
-          <p className="w-4/6 text-center mx-auto bg-green-300">
-            {state.alertText}
-          </p>
-        ) : (
-          <p className="w-4/6 text-center mx-auto bg-red-300">
-            {state.alertText}
-          </p>
-        ))}
+      {state.showAlert && (
+        <p className={`w-4/6 text-center mx-auto ${state.alertColor}`}>
+          {state.alertText}
+        </p>
+      )}
     </>
   );
 };

@@ -9,16 +9,29 @@ import * as data from "../utilities/data";
 export const MainContext = createContext();
 
 const MainContainer = () => {
+  //ResettingUi
+  const resetPage = () => {
+    dispatch({ type: "setEdit", payload: false });
+    dispatch({ type: "setInputText", payload: "" });
+    dispatch({ type: "setButtonText", payload: data.submit });
+  };
+
   const reducer = (state, action) => {
     switch (action.type) {
       case "setMainList": {
         return { ...state, mainList: action.payload };
+      }
+      case "setItem": {
+        return { ...state, item: action.payload };
       }
       case "setItemId": {
         return { ...state, itemId: action.payload };
       }
       case "setEdit": {
         return { ...state, edit: action.payload };
+      }
+      case "setFocus": {
+        return { ...state, focus: action.payload };
       }
       case "setEditId": {
         return { ...state, editId: action.payload };
@@ -35,6 +48,9 @@ const MainContainer = () => {
       case "setDeleteItem": {
         return { ...state, deleteItem: action.payload };
       }
+      case "setShowClearList": {
+        return { ...state, showClearList: action.payload };
+      }
       case "setClearList": {
         return { ...state, clearList: action.payload };
       }
@@ -44,25 +60,31 @@ const MainContainer = () => {
       case "setAlertText": {
         return { ...state, alertText: action.payload };
       }
+      case "setAlertColor": {
+        return { ...state, alertColor: action.payload };
+      }
       case "setShowAlert": {
         return { ...state, showAlert: action.payload };
       }
-
       default:
         throw new Error();
     }
   };
   const defaultState = {
     mainList: [],
+    item: "",
     itemId: 0,
     edit: false,
     editId: -1,
+    focus: "",
     inputText: "",
     buttonText: data.submit,
     deleteId: -1,
     deleteItem: false,
+    showClearList: false,
     clearList: false,
     alertType: "",
+    alertColor: "",
     alertText: "",
     showAlert: false,
   };
@@ -73,12 +95,16 @@ const MainContainer = () => {
     //updatingMainList
     if (state.mainList.length > 0) {
       localStorage.setItem("mainList", JSON.stringify([...state.mainList]));
+      //showingClearListButton
+      dispatch({ type: "setShowClearList", payload: true });
     }
     //clearingMainList
     if (state.clearList) {
       localStorage.setItem("mainList", JSON.stringify([...state.mainList]));
       data.groceryList.length = 0;
       dispatch({ type: "setClearList", payload: false });
+      //hidingClearListButton
+      dispatch({ type: "setShowClearList", payload: false });
     }
   }, [state.mainList]);
 
@@ -89,6 +115,7 @@ const MainContainer = () => {
         value={{
           dispatch,
           state,
+          resetPage,
         }}
       >
         <Alert />

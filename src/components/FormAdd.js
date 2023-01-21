@@ -1,12 +1,11 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { groceryList } from "./../utilities/data";
 import { MainContext } from "./MainContainer";
 import { arrayChange, arrayDelete } from "./../utilities/functions";
 import * as data from "./../utilities/data";
 
 const FormAdd = () => {
-  const { dispatch, state } = useContext(MainContext);
-  const [item, setItem] = useState("");
+  const { dispatch, state, resetPage } = useContext(MainContext);
   const inputField = useRef();
 
   //saveLocalStorageToAnotherArrayForNotLosingTheContentAndShowingListAtStart
@@ -23,8 +22,12 @@ const FormAdd = () => {
   //toUpdateInputFieldAndButtonTextWhenEditing
   useEffect(() => {
     inputField.current.value = state.inputText;
-    if (state.inputText !== "")
+    dispatch({ type: "setFocus", payload: inputField });
+    if (state.inputText !== "") {
       dispatch({ type: "setButtonText", payload: data.edit });
+      //activateFocus
+      state.focus.current.focus();
+    }
   }, [state.inputText]);
 
   //toDeleteItemFromMainList
@@ -35,35 +38,45 @@ const FormAdd = () => {
       dispatch({ type: "setMainList", payload: [...state.mainList] });
       dispatch({ type: "setDeleteItem", payload: false });
       //toClearLocalStorageToo
-      if (state.mainList.length === 0)
+      if (state.mainList.length === 0) {
         dispatch({ type: "setClearList", payload: true });
+        resetPage();
+      }
     }
   }, [state.deleteItem]);
 
   //addingNewItemAndUpdateMainList
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!state.edit) {
+    if (!state.edit && state.item.length > 0) {
       const itemId = state.itemId;
+      const item = state.item;
       groceryList.push({ itemId, item });
       dispatch({ type: "setItemId", payload: state.itemId + 1 });
       dispatch({ type: "setMainList", payload: [...groceryList] });
       dispatch({ type: "setAlertType", payload: data.alertTypeAdd });
+      dispatch({ type: "setAlertColor", payload: data.colorAddEdit });
       dispatch({ type: "setShowAlert", payload: true });
     }
     //toEditInputFieldAndListİtemAndUpdateMainList
-    else {
-      arrayChange(state.mainList, state.editId, item);
+    else if (state.edit && state.item.length > 0) {
+      arrayChange(state.mainList, state.editId, state.item);
       dispatch({ type: "setMainList", payload: [...state.mainList] });
-      dispatch({ type: "setEdit", payload: false });
-      dispatch({ type: "setButtonText", payload: data.submit });
+      dispatch({ type: "setAlertType", payload: data.alertTypeEdit });
+      dispatch({ type: "setAlertColor", payload: data.colorAddEdit });
+      dispatch({ type: "setShowAlert", payload: true });
+      resetPage();
+    } else if (state.item.length === 0) {
+      dispatch({ type: "setAlertType", payload: data.alertTypeEmpty });
+      dispatch({ type: "setAlertColor", payload: data.colorEmptyWarning });
+      dispatch({ type: "setShowAlert", payload: true });
     }
     inputField.current.value = "";
   };
 
   //toGetInput
   const handleChange = (event) => {
-    setItem(event.target.value);
+    dispatch({ type: "setItem", payload: event.target.value });
   };
 
   return (
