@@ -81,13 +81,13 @@ const FormAdd = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-11/12 mx-auto">
+    <form onSubmit={handleSubmit} className="w-11/12 m-auto">
       <input
         type="text"
         placeholder="e.g eggs"
         ref={inputField}
         onChange={handleChange}
-        className="indent-4 md:10/12 w-9/12 leading-8 mt-4 bg-colorPrimary rounded-l placeholder:text-blue-500"
+        className="indent-4 md:w-10/12 w-9/12 leading-8 mt-4 bg-colorPrimary rounded-l placeholder:text-blue-500"
       ></input>
       <button
         type="submit"
